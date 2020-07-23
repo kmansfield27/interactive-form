@@ -5,13 +5,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const jobSelect = document.getElementById('title');
     const designSelect = document.getElementById('design');
     const designOptions = document.querySelectorAll('#design option');
+    const activities = document.querySelector('.activities');
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
     designOptions[0].hidden = true;
+
+    
+    /*****************************************************/
+    // Startup Functions
+    /*****************************************************/
 
     // Set name input to focus by default
     const focusOnLoad = (inputName) => {
         inputName.focus();
     }
+
+
+    /*****************************************************/
+    // Handlers
+    /*****************************************************/
 
     // Show other job field
     const showOtherJob = () => {
@@ -31,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const punOptions = [];
         const heartOptions = [];
 
+        // Loop over color options. Push pun and heart shirts into new arrays
         for (let i = 0; i < colorOptions.length; i++) {
             colorOptions[i].hidden = true;
             const colorOptionValue = colorOptions[i].value;
@@ -44,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        // Show appropriate new array based on design select change
         if (event.target.value === 'js puns') {
             for ( let i = 0; i < punOptions.length; i++ ) {
                 punOptions[i].hidden = false;
@@ -57,19 +71,54 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Activity checkbox handler
+    const clickActivity = () => {
+        
+        const clicked = event.target;
+        
+        if ( clicked.tagName === 'INPUT') {
+            const clickedDayAndTime = clicked.getAttribute('data-day-and-time');
+            const clickedCost = clicked.getAttribute('data-cost');
+    
+            for (let i = 0; i < checkboxes.length; i++) {
+                const checkboxDayAndTime = checkboxes[i].getAttribute('data-day-and-time');
+    
+                if ( clickedDayAndTime === checkboxDayAndTime && clicked !== checkboxes[i]) {
+                    if (clicked.checked) {
+                        checkboxes[i].disabled = true;
+                    } else {
+                        checkboxes[i].disabled = false;
+                    }
+                }
+            }
+        }
+    }
 
+    
+
+
+    /*****************************************************/
     // Initialize functions
+    /*****************************************************/
     focusOnLoad(name);
     showOtherJob();
 
 
+
+    /*****************************************************/
     // Callback functions
+    /*****************************************************/
+
     jobSelect.addEventListener( 'change', () => {
         showOtherJob();     
     });
 
     designSelect.addEventListener( 'change', () => {
         showShirtColor();
+    });
+
+    activities.addEventListener( 'change', () => {
+        clickActivity();
     });
 
 });
