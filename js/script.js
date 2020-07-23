@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const activities = document.querySelector('.activities');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
+    // Hide Select Theme option from showing when design select is clicked
     designOptions[0].hidden = true;
 
     
@@ -40,10 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const colorOptions = document.getElementById('color').options;
         const punShirtColors = ['cornflowerblue', 'darkslategrey', 'gold'];
         const heartShirtColors = ['tomato', 'steelblue', 'dimgrey'];
+
+        // Create new arrays
         const punOptions = [];
         const heartOptions = [];
 
-        // Loop over color options. Push pun and heart shirts into new arrays
+        /* Loop over shirt options. Set all options to hidden.
+           Push pun and heart shirts into the new arrays.*/
         for (let i = 0; i < colorOptions.length; i++) {
             colorOptions[i].hidden = true;
             const colorOptionValue = colorOptions[i].value;
@@ -57,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Show appropriate new array based on design select change
+        // Show elements in the appropriate new array based on the change value of select
         if (event.target.value === 'js puns') {
             for ( let i = 0; i < punOptions.length; i++ ) {
                 punOptions[i].hidden = false;
