@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const activities = document.querySelector('.activities');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     const payment = document.getElementById('payment');
+    const creditCard = document.getElementById('credit-card');
+    const paypal = document.getElementById('paypal');
+    const bitcoin = document.getElementById('bitcoin');
     let totalCost = 0;
     const totalCostText = document.createElement('p');
 
@@ -24,11 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set name input to focus by default
     const inputDefaults = (focusedInput, defaultPayment) => {
         
-        focusedInput.focus();
-        
         const paymentOptions = defaultPayment.options;
+        paymentOptions[0].disabled = true;
         paymentOptions[1].selected = true;
+        paypal.style.display = 'none';
+        bitcoin.style.display = 'none';
 
+        focusedInput.focus();
     }
 
 
@@ -47,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+
    // Handler for Design select
    const showShirtColor = () => {
         const colorOptions = document.getElementById('color').options;
@@ -86,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+
     // Activity checkbox handler
     const clickActivity = () => {
         
@@ -123,6 +130,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+
+
+    // Payment method handler
+    const changePayment = () => {
+
+        let paymentDivs = [creditCard, paypal, bitcoin];
+
+        paymentDivs.forEach (paymentDiv => {
+            paymentDiv.style.display = 'none';
+        }); 
+
+        if (event.target.value === 'credit card') {
+            paymentDivs[0].style.display = 'block';
+        } else if (event.target.value === 'paypal') {
+            paymentDivs[1].style.display = 'block';
+        } else if (event.target.value === 'bitcoin') {
+            paymentDivs[2].style.display = 'block';
+        }
+    }
     
 
 
@@ -148,6 +174,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     activities.addEventListener( 'change', () => {
         clickActivity();
+    });
+
+    payment.addEventListener( 'change', () => {
+        changePayment();
     });
 
 });
