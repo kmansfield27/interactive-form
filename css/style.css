@@ -167,6 +167,21 @@ option {
 }
 
 /* ================================= 
+  Error Classes
+==================================== */
+
+.error-message {
+	display: block;
+	margin-bottom: 1.5em;	
+	color: red;
+}
+
+.has-error {
+	border-color: red;
+	margin-bottom: .75em;
+}
+
+/* ================================= 
   Helper Classes
 ==================================== */
 

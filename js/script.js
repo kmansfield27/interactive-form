@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Global variables
     const name = document.getElementById('name');
+    const email = document.getElementById('mail');
     const jobSelect = document.getElementById('title');
     const designSelect = document.getElementById('design');
     const designOptions = document.querySelectorAll('#design option');
@@ -11,6 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const creditCard = document.getElementById('credit-card');
     const paypal = document.getElementById('paypal');
     const bitcoin = document.getElementById('bitcoin');
+    const ccNum = document.getElementById('cc-num');
+    const zip= document.getElementById('zip');
+    const ccv = document.getElementById('ccv');
+    const form = document.querySelector('form');
+
     let totalCost = 0;
     const totalCostText = document.createElement('p');
 
@@ -35,9 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
         bitcoin.style.display = 'none';
 
         // Min and max of payment fields
-        const zip = document.getElementById('zip');
-        const cvv = document.getElementById('cvv');
-        const ccNum = document.getElementById('cc-num');
         zip.maxLength = 5;
         cvv.maxLength = 3;
         ccNum.maxLength = 16;
@@ -47,6 +50,27 @@ document.addEventListener('DOMContentLoaded', function() {
         focusedInput.focus();
     }
 
+    // Create error messages and insert into DOM (hidden by default)
+    const createErrorMessages = () => {
+
+        name.insertAdjacentHTML
+            ('afterend', '<span id="name-error" class="error-message is-hidden">Please enter your name.</span>');
+
+        email.insertAdjacentHTML
+            ('afterend', '<span id="email-error" class="error-message is-hidden">Please enter a valid email address.</span>' );
+
+        ccNum.insertAdjacentHTML
+            ('afterend', '<span id="ccNum-error" class="error-message is-hidden">Please enter a valid credit card number.</span>');
+
+        activities.insertAdjacentHTML
+            ('beforeend', '<span id="activities-error" class="error-message is-hidden">Please select at least one activity.</span>');
+
+        zip.insertAdjacentHTML
+            ('afterend', '<span id="zip-error" class="error-message is-hidden">Please enter your zip code.</span>');
+
+        cvv.insertAdjacentHTML
+            ('afterend', '<span id="cvv-error" class="error-message is-hidden">Please enter a 3-digit CVV number.</span>');
+    }
 
 
     /*****************************************************/
@@ -162,7 +186,31 @@ document.addEventListener('DOMContentLoaded', function() {
             paymentDivs[2].style.display = 'block';
         }
     }
-    
+
+
+    /*****************************************************/
+    // Validation Handlers
+    /*****************************************************/
+
+    const handleTextInputError = (input, inputError) => {
+        input.classList.add('has-error');
+        inputError.classList.remove('is-hidden');
+    }
+
+
+    // Name field
+    const validateName = () => {
+        const nameValue = name.value;
+
+        if (nameValue.length > 0) {
+            //nameError.classList.remove('is-hidden');
+            return true;
+        } else {
+            //handleTextInputError(name, nameError);
+            return false;
+        }
+    }
+
 
 
     /*****************************************************/
@@ -170,6 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
     /*****************************************************/
     inputDefaults(name, payment);
     showOtherJob();
+    createErrorMessages();
 
 
 
@@ -192,5 +241,13 @@ document.addEventListener('DOMContentLoaded', function() {
     payment.addEventListener( 'change', () => {
         changePayment();
     });
+
+    form.addEventListener( 'submit', (e) => {
+        e.preventDefault();
+
+        validateName();
+    });
+
+
 
 });
