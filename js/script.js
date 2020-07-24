@@ -7,10 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const designOptions = document.querySelectorAll('#design option');
     const activities = document.querySelector('.activities');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    let totalCost = 0;
+    const totalCostText = document.createElement('p');
+
 
     // Hide Select Theme option from showing when design select is clicked
     designOptions[0].hidden = true;
-
+    activities.appendChild(totalCostText);
+    totalCostText.style.display = 'none';
     
     /*****************************************************/
     // Startup Functions
@@ -20,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const focusOnLoad = (inputName) => {
         inputName.focus();
     }
-
 
     /*****************************************************/
     // Handlers
@@ -79,10 +82,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const clickActivity = () => {
         
         const clicked = event.target;
+        const clickedDayAndTime = clicked.getAttribute('data-day-and-time');
+        const clickedCost = clicked.getAttribute('data-cost');
         
         if ( clicked.tagName === 'INPUT') {
-            const clickedDayAndTime = clicked.getAttribute('data-day-and-time');
-            const clickedCost = clicked.getAttribute('data-cost');
     
             for (let i = 0; i < checkboxes.length; i++) {
                 const checkboxDayAndTime = checkboxes[i].getAttribute('data-day-and-time');
@@ -94,6 +97,20 @@ document.addEventListener('DOMContentLoaded', function() {
                         checkboxes[i].disabled = false;
                     }
                 }
+            }
+
+            // Adjust cost of total cost
+            if (clicked.checked === true) {
+                totalCost += parseInt(clickedCost);
+            } else {
+                totalCost -= parseInt(clickedCost);
+            }
+
+            if (totalCost === 0) {
+                totalCostText.style.display = 'none';
+            } else {
+                totalCostText.style.display = 'block';
+                totalCostText.textContent = `Total: $${totalCost}`;
             }
         }
     }
