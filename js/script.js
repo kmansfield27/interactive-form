@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const designOptions = document.querySelectorAll('#design option');
     const activities = document.querySelector('.activities');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    const payment = document.getElementById('payment');
     let totalCost = 0;
     const totalCostText = document.createElement('p');
 
@@ -21,9 +22,16 @@ document.addEventListener('DOMContentLoaded', function() {
     /*****************************************************/
 
     // Set name input to focus by default
-    const focusOnLoad = (inputName) => {
-        inputName.focus();
+    const inputDefaults = (focusedInput, defaultPayment) => {
+        
+        focusedInput.focus();
+        
+        const paymentOptions = defaultPayment.options;
+        paymentOptions[1].selected = true;
+
     }
+
+
 
     /*****************************************************/
     // Handlers
@@ -99,13 +107,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Adjust cost of total cost
+            // Calculate running total
             if (clicked.checked === true) {
                 totalCost += parseInt(clickedCost);
             } else {
                 totalCost -= parseInt(clickedCost);
             }
 
+            // Print total cost if > $0
             if (totalCost === 0) {
                 totalCostText.style.display = 'none';
             } else {
@@ -114,14 +123,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-
     
 
 
     /*****************************************************/
     // Initialize functions
     /*****************************************************/
-    focusOnLoad(name);
+    inputDefaults(name, payment);
     showOtherJob();
 
 
