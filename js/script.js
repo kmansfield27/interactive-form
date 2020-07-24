@@ -27,12 +27,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set name input to focus by default
     const inputDefaults = (focusedInput, defaultPayment) => {
         
+        // Payment method info
         const paymentOptions = defaultPayment.options;
         paymentOptions[0].disabled = true;
         paymentOptions[1].selected = true;
         paypal.style.display = 'none';
         bitcoin.style.display = 'none';
 
+        // Min and max of payment fields
+        const zip = document.getElementById('zip');
+        const cvv = document.getElementById('cvv');
+        const ccNum = document.getElementById('cc-num');
+        zip.maxLength = 5;
+        cvv.maxLength = 3;
+        ccNum.maxLength = 16;
+
+
+        // Focused input
         focusedInput.focus();
     }
 
@@ -137,10 +148,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let paymentDivs = [creditCard, paypal, bitcoin];
 
+        // Hide all payment information divs
         paymentDivs.forEach (paymentDiv => {
             paymentDiv.style.display = 'none';
-        }); 
-
+        });
+        
+        // Show the appropriate payment info div to match the select value
         if (event.target.value === 'credit card') {
             paymentDivs[0].style.display = 'block';
         } else if (event.target.value === 'paypal') {
