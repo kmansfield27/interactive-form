@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide the 'Your Job Role' input by default
         jobOther.style.display = 'none';
 
-        // Set the min and max of the payment fields
+        // Set the max lengths of the payment fields
         zip.maxLength = 5;
         cvv.maxLength = 3;
         ccNum.maxLength = 16;
@@ -76,9 +76,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+    /*****************************************************/
+    // Initialize startup function
+    /*****************************************************/
+
+
+    init();
+
+
 
     /*****************************************************/
-    // Handlers
+    // Callbacks
     /*****************************************************/
 
 
@@ -96,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    /* Handler for the Job Role select.
+    /* Callback for the Job Role select.
     It shows the 'Your Job Role' input when Job Role === other. */
     const showOtherJob = () => {
         if (jobSelect.value === 'other') {
@@ -107,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
 
-   /* Handler for the shirt design select input.
+   /* Callback for the shirt design select input.
    It controls what options display in the shirt color select based on value of the design select*/
    const showShirtColor = () => {
 
@@ -156,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    /* Handler for the activity checkboxes - It disables/enables checkboxes based on scheduling conflicts.
+    /* Callback for the activity checkboxes - It disables/enables checkboxes based on scheduling conflicts.
     It also calculates the $ total for the selected activities. */
     const clickActivity = () => {
         
@@ -204,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
-    /* Handler for the payment method select input. 
+    /* Callback for the payment method select input. 
     It hides/shows content based on the select value */
     const changePayment = () => {
 
@@ -226,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     /*****************************************************/
-    // Validation Handlers
+    // Validation Callbacks
     /*****************************************************/
 
 
@@ -253,8 +261,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const nameValue = name.value;
         if (nameValue.length > 0) {
             hideInputError(name, nameError);
+            return true;
         } else {
             showInputError(name, nameError);
+            return false;
         }
     }
 
@@ -266,8 +276,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const emailDot = emailValue.lastIndexOf('.');
         if (emailAtIndex > 1 && emailDot > emailAtIndex + 1) {
             hideInputError(email, emailError);
+            return true;
         } else {
             showInputError(email, emailError);
+            return false;
         }
     }
 
@@ -280,7 +292,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return true;
             }        
         }
-        showInputError(activities, activitiesError);   
+        showInputError(activities, activitiesError);
+        return false;
     }
 
 
@@ -293,40 +306,43 @@ document.addEventListener('DOMContentLoaded', function() {
             const ccNumValue = ccNum.value;
             const zipValue = zip.value;
             const cvvValue = cvv.value;
+            let ccPassed;
+            let zipPassed;
+            let cvvPassed;
 
             // 16 char max for ccNumb. 13-16 char === valid
             if (ccNumValue.length > 12) {
                 hideInputError(ccNum, ccNumError);
+                ccPassed = true;
             } else {
                 showInputError(ccNum, ccNumError);
             }
 
             if (zipValue.length === 5) {
                 hideInputError(zip, zipError);
+                zipPassed = true;
             } else {
                 showInputError(zip, zipError);
             }
 
             if (cvvValue.length === 3) {
                 hideInputError(cvv, cvvError);
+                cvvPassed = true;
             } else {
                 showInputError(cvv, cvvError);
             }
 
+            if (ccPassed && zipPassed && cvvPassed) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 
 
     /*****************************************************/
-    // Initialize startup function
-    /*****************************************************/
-
-
-    init();
-
-
-    /*****************************************************/
-    // Callback functions
+    // Event Handlers 
     /*****************************************************/
 
 
@@ -348,10 +364,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     form.addEventListener( 'submit', (e) => {
-        e.preventDefault();
-        validateName();
-        validateEmail();
-        validateActivities();
-        validatePayment();
+
+        // If any of the validation callbacks return false, prevent default
+        if ( !validateName() ) {
+            e.preventDefault();
+        }
+
+        if ( !validateEmail() ) {
+            e.preventDefault();
+        }
+
+        if ( !validateActivities() ) {
+            e.preventDefault();
+        }
+
+        if ( !validatePayment()) {
+            e.preventDefault();
+        }
     });
 });
