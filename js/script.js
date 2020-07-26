@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', function() {
         colorOptions = document.querySelectorAll('#color option');
         colorOptions[0].selected = true;
 
+        // Hide all other color options by default
+        for (let i = 1; i < colorOptions.length; i++) {
+            colorOptions[i].hidden = true;
+        }
+
         // Set the max lengths of the payment fields
         zip.maxLength = 5;
         cvv.maxLength = 3;
