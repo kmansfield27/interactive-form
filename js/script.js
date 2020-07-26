@@ -139,12 +139,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
             for (let i = 0; i < checkboxes.length; i++) {
                 const checkboxDayAndTime = checkboxes[i].getAttribute('data-day-and-time');
+                const parentLabel = checkboxes[i].parentNode;
     
                 if ( clickedDayAndTime === checkboxDayAndTime && clicked !== checkboxes[i]) {
                     if (clicked.checked) {
                         checkboxes[i].disabled = true;
+                        parentLabel.style.color = 'rgba(0,0,0,.35)';
                     } else {
                         checkboxes[i].disabled = false;
+                        parentLabel.style.color = 'rgb(0,0,0)';
                     }
                 }
             }
