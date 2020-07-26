@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const jobOther = document.getElementById('title-other-container');
     const designSelect = document.getElementById('design');
     const designOptions = document.querySelectorAll('#design option');
+    const color = document.getElementById('color');
+    let colorOptions = document.querySelectorAll('#color option');
     const activities = document.querySelector('.activities');
     const checkboxes = document.querySelectorAll('input[type="checkbox"]');
     const payment = document.getElementById('payment');
@@ -26,12 +28,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // Create and bind error messages
-    const nameError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter your name.'});
-    const emailError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter a valid email.'});
-    const activitiesError = createError('span', {className: 'error-message is-hidden', textContent: 'Please select at least one activity.'});
-    const ccNumError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter a valid credit card.'});
-    const zipError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter zip code.'});
-    const cvvError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter CVV number.'});
+    const nameError = create('span', {className: 'error-message is-hidden', textContent: 'Please enter your name.'});
+    const emailError = create('span', {className: 'error-message is-hidden', textContent: 'Please enter a valid email.'});
+    const activitiesError = create('span', {className: 'error-message is-hidden', textContent: 'Please select at least one activity.'});
+    const ccNumError = create('span', {className: 'error-message is-hidden', textContent: 'Please enter a valid credit card.'});
+    const zipError = create('span', {className: 'error-message is-hidden', textContent: 'Please enter zip code.'});
+    const cvvError = create('span', {className: 'error-message is-hidden', textContent: 'Please enter CVV number.'});
 
 
     
@@ -53,6 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide the 'Your Job Role' input by default
         jobOther.style.display = 'none';
 
+        // Create and set default t-shirt color value
+        const colorPlaceholder = create('option', {textContent: 'Please select a T-shirt theme'});
+        insert( color, colorPlaceholder, 'afterbegin');
+        colorOptions = document.querySelectorAll('#color option');
+        colorOptions[0].selected = true;
+
         // Set the max lengths of the payment fields
         zip.maxLength = 5;
         cvv.maxLength = 3;
@@ -67,12 +75,12 @@ document.addEventListener('DOMContentLoaded', function() {
         name.focus();
 
         // Insert default error messages into DOM
-        insertError( name, nameError, 'afterend');   
-        insertError( email, emailError, 'afterend');
-        insertError( activities, activitiesError, 'beforeend');
-        insertError( ccNum, ccNumError, 'afterend');
-        insertError( zip, zipError, 'afterend');
-        insertError( cvv, cvvError, 'afterend');
+        insert( name, nameError, 'afterend');   
+        insert( email, emailError, 'afterend');
+        insert( activities, activitiesError, 'beforeend');
+        insert( ccNum, ccNumError, 'afterend');
+        insert( zip, zipError, 'afterend');
+        insert( cvv, cvvError, 'afterend');
     }
 
 
@@ -92,15 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /* Function to create error messages. Arguments are the created tag name and an object for its property key/values
     I modified code from: https://stackoverflow.com/questions/46738333/using-javascript-loop-to-create-multiple-html-elements */
-    function createError(tagName, props) {
+    function create(tagName, props) {
         return Object.assign( document.createElement(tagName), (props || {}) );
     }
 
 
     /* Function to insert error messages. It takes the target element, error message to insert, and position.
     I modified code from: https://stackoverflow.com/questions/46738333/using-javascript-loop-to-create-multiple-html-elements */
-    function insertError(targetElement, error, position) {
-        targetElement.insertAdjacentElement(position, error);
+    function insert(targetElement, insertedElement, position) {
+        targetElement.insertAdjacentElement(position, insertedElement);
     }
 
 
@@ -118,9 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
    /* Callback for the shirt design select input.
    It controls what options display in the shirt color select based on value of the design select*/
    const showShirtColor = () => {
-
-        // Get the options of the select 
-        const colorOptions = document.getElementById('color').options;
 
         // Define colors for each shirt type
         const punShirtColors = ['cornflowerblue', 'darkslategrey', 'gold'];
