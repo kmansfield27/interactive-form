@@ -14,9 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const bitcoin = document.getElementById('bitcoin');
     const ccNum = document.getElementById('cc-num');
     const zip= document.getElementById('zip');
-    const ccv = document.getElementById('ccv');
+    const cvv = document.getElementById('cvv');
     const form = document.querySelector('form');
-
     let totalCost = 0;
     const totalCostText = document.createElement('p');
 
@@ -50,27 +49,46 @@ document.addEventListener('DOMContentLoaded', function() {
         focusedInput.focus();
     }
 
-    // Create error messages and insert into DOM (hidden by default)
-    const createErrorMessages = () => {
+    /*
+    The following create and insert functions were adaped from the top answer on:
+    https://stackoverflow.com/questions/46738333/using-javascript-loop-to-create-multiple-html-elements
+    */
 
-        name.insertAdjacentHTML
-            ('afterend', '<span id="name-error" class="error-message is-hidden">Please enter your name.</span>');
-
-        email.insertAdjacentHTML
-            ('afterend', '<span id="email-error" class="error-message is-hidden">Please enter a valid email address.</span>' );
-
-        ccNum.insertAdjacentHTML
-            ('afterend', '<span id="ccNum-error" class="error-message is-hidden">Please enter a valid credit card number.</span>');
-
-        activities.insertAdjacentHTML
-            ('beforeend', '<span id="activities-error" class="error-message is-hidden">Please select at least one activity.</span>');
-
-        zip.insertAdjacentHTML
-            ('afterend', '<span id="zip-error" class="error-message is-hidden">Please enter your zip code.</span>');
-
-        cvv.insertAdjacentHTML
-            ('afterend', '<span id="cvv-error" class="error-message is-hidden">Please enter a 3-digit CVV number.</span>');
+    // Function to create error messages
+    const createError = (tagName, props) => {
+        return Object.assign( document.createElement(tagName), (props || {}) );
     }
+
+    // Function to insert error messages
+    const insertError = (targetElement, error, position) => {
+        targetElement.insertAdjacentElement(position, error);
+    }
+
+    //Name
+    const nameError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter your name.'});
+    insertError( name, nameError, 'afterend');
+
+    // Email
+    const emailError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter a valid email.'});
+    insertError( email, emailError, 'afterend');
+
+    // Activities
+    const activitiesError = createError('span', {className: 'error-message is-hidden', textContent: 'Please select at least one activity.'});
+    insertError( activities, activitiesError, 'beforeend');
+
+    // CC Number
+    const ccNumError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter a valid credit card.'});
+    insertError( ccNum, ccNumError, 'afterend');
+
+    // CC Number
+    const zipError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter zip code.'});
+    insertError( zip, zipError, 'afterend');
+
+    // CVV
+    const cvvError = createError('span', {className: 'error-message is-hidden', textContent: 'Please enter CVV number.'});
+    insertError( cvv, cvvError, 'afterend');
+
+
 
 
     /*****************************************************/
@@ -191,26 +209,82 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
 
+
     /*****************************************************/
     // Validation Handlers
     /*****************************************************/
 
-    const handleTextInputError = (input, inputError) => {
+    
+    const hideInputError = (input, inputError) => {
+        input.classList.remove('has-error');
+        inputError.classList.add('is-hidden');
+        return true;
+    }
+    
+    const showInputError = (input, inputError) => {
         input.classList.add('has-error');
         inputError.classList.remove('is-hidden');
+        return false;
     }
 
 
-    // Name field
     const validateName = () => {
         const nameValue = name.value;
-
         if (nameValue.length > 0) {
-            //nameError.classList.remove('is-hidden');
-            return true;
+            hideInputError(name, nameError);
         } else {
-            //handleTextInputError(name, nameError);
-            return false;
+            showInputError(name, nameError);
+        }
+    }
+
+    const validateEmail = () => {
+        const emailValue = email.value;
+        const emailAtIndex = emailValue.indexOf('@');
+        const emailDot = emailValue.lastIndexOf('.');
+        if (emailAtIndex > 1 && emailDot > emailAtIndex + 1) {
+            hideInputError(email, emailError);
+        } else {
+            showInputError(email, emailError);
+        }
+    }
+
+    const validateActivities = () => {
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                hideInputError(activities, activitiesError);
+                return true;
+            }        
+        }
+        showInputError(activities, activitiesError);   
+    }
+
+    const validatePayment = () => {
+        const paymentValue = payment.value;
+
+        if (paymentValue === 'credit card') {
+
+            const ccNumValue = ccNum.value;
+            const zipValue = zip.value;
+            const cvvValue = cvv.value;
+
+            if (ccNumValue.length > 12) {
+                hideInputError(ccNum, ccNumError);
+            } else {
+                showInputError(ccNum, ccNumError);
+            }
+
+            if (zipValue.length === 5) {
+                hideInputError(zip, zipError);
+            } else {
+                showInputError(zip, zipError);
+            }
+
+            if (cvvValue.length === 3) {
+                hideInputError(cvv, cvvError);
+            } else {
+                showInputError(cvv, cvvError);
+            }
+
         }
     }
 
@@ -221,7 +295,6 @@ document.addEventListener('DOMContentLoaded', function() {
     /*****************************************************/
     inputDefaults(name, payment);
     showOtherJob();
-    createErrorMessages();
 
 
 
@@ -239,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     activities.addEventListener( 'change', () => {
         clickActivity();
+        validateActivities();
     });
 
     payment.addEventListener( 'change', () => {
@@ -249,6 +323,9 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
 
         validateName();
+        validateEmail();
+        validateActivities();
+        validatePayment();
     });
 
 
